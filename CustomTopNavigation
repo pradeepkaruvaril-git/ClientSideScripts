@@ -1,0 +1,156 @@
+var year=getParameterByName('year');
+var nav={   "topNav":{},
+            "OtherNav":{}
+         };  
+
+function getParameterByName(name, url) {
+	if (!url) url = window.location.href;
+	name = name.replace(/[\[\]]/g, "\\$&");
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+if(year!=null){
+var head  = document.getElementsByTagName('head')[0];/*Apply Style sheet*/
+var link=document.createElement("link");
+link.rel="stylesheet";
+link.type="text/css";
+//link.href=_spPageContextInfo.webAbsoluteUrl+"/SiteAssets/TopNav.css";/*..*/
+head.appendChild(link);
+}
+document.addEventListener('DOMContentLoaded', function defer() {
+      if(year!=null){
+      
+      
+      var loader=document.createElement("div");
+      loader.className="eploader";
+      var preloader=document.createElement("div");
+      preloader.id="preloader";
+      preloader.appendChild(loader);
+      document.getElementById("DeltaTopNavigation").parentNode.insertBefore(preloader,document.getElementById("DeltaTopNavigation"));
+      document.getElementById("preloader").style.display="block";
+      getNav(year);
+      document.getElementById("preloader").style.display="none";
+    }
+    
+});
+
+function getNav(year){
+      var xmlhttpUrl = _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/getByTitle('topnav')/items?$select=Title,HeaderUrl,Position,Year,GroupId,Id&$filter=Year eq " + year+"&$orderby=Position";
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open('GET',xmlhttpUrl,true);
+      xmlhttp.setRequestHeader("Accept","application/json"); 
+      xmlhttp.onreadystatechange = function(){
+            if(xmlhttp.readyState == XMLHttpRequest.DONE){
+                  if(xmlhttp.status == 200){
+                        var result = JSON.parse(xmlhttp.responseText);
+                        count = result.value.length;
+                        //console.log(count + ' items found');
+                        for(var i=0;i<count;i++){
+                              if(result.value[i].GroupId==null|| undefined){
+                              nav.topNav[result.value[i].Position]={"Title":result.value[i].Title,"Id":result.value[i].Id,"URL":result.value[i].HeaderUrl,"Position":result.value[i].Position};
+                              }
+                              else{
+                                    if(nav.OtherNav[result.value[i].GroupId]==null){
+                                          nav.OtherNav[result.value[i].GroupId] =[];
+                                    }
+                                    nav.OtherNav[result.value[i].GroupId].push({"Title":result.value[i].Title,"Id":result.value[i].Id,"GroupId":result.value[i].GroupId,"URL":result.value[i].HeaderUrl,"Position":result.value[i].Position});
+                              }
+                        }
+                        buildNav(year);
+                        
+                  }
+            }
+      }
+      xmlhttp.send();
+
+}
+
+function childNav(childNavArray){
+      var buildCNavigation="<ul>";
+      var len=childNavArray.length;
+      for(var i=0;i<len;i++){
+            if(childNavArray[i].URL!=null){
+                  if(childNavArray[i].URL.indexOf("?") > -1){
+                        childNavArray[i].URL= childNavArray[i].URL+"&year="+year;
+                  }
+                  else{
+                        childNavArray[i].URL= childNavArray[i].URL+"?year="+year;
+                  }
+            }
+            buildCNavigation+="<li><a href='"+childNavArray[i].URL+"'>"+childNavArray[i].Title+"</a>";
+            if(nav.OtherNav[childNavArray[i].Id]!=null || undefined){
+            var retString= childNav(nav.OtherNav[childNavArray[i].Id]);
+            buildCNavigation+=retString+"</li>";
+            }
+            else{
+                  buildCNavigation+="</li>";
+            }
+      }
+      buildCNavigation+="</ul>";
+      return buildCNavigation;
+}
+
+function buildNav(year){
+      var buildNavigation="<ul class='main-navigation'><li><a href='"+_spPageContextInfo.webAbsoluteUrl+"'><div class='homeIcon'></div></a></li>";
+      var topNavLen= nav.topNav.length;
+      for(eachKey in nav.topNav){
+           var eachNav=nav.topNav[eachKey];
+           if(eachNav.URL!=null){
+                  if(eachNav.URL.indexOf("?") > -1){
+                        eachNav.URL= eachNav.URL+"&year="+year;
+                  }
+                  else{
+                        eachNav.URL= eachNav.URL+"?year="+year;
+                  }
+           }
+           
+           buildNavigation+="<li><a href='"+eachNav.URL+"'>"+eachNav.Title+"</a>";
+           if(nav.OtherNav[eachNav.Id]!=null || undefined){
+           var retchild=childNav(nav.OtherNav[eachNav.Id]);
+            buildNavigation+=retchild+"</li>";
+           }
+           else{
+                 buildNavigation+="</li>";
+           }
+      }
+      buildNavigation+="</ul>";
+      var topNavDiv=document.createElement("div");
+      topNavDiv.id="topNavigation"; 
+      topNavDiv.innerHTML=buildNavigation;
+
+      var yearTitleDiv=document.createElement("div");
+      yearTitleDiv.id="yearTitle";
+      yearTitleDiv.innerHTML=year+" Retail Playbook";
+
+      document.getElementById("contentRow").insertBefore(topNavDiv,document.getElementById("contentRow").children[0]);
+
+      document.getElementById("DeltaTopNavigation").parentNode.insertBefore(yearTitleDiv,document.getElementById("DeltaTopNavigation"));
+     
+
+}
+
+ function resetLinks(){
+       if(window.jQuery){
+     var container = document.querySelector(".eplaybook-main-container");
+      var matches = container.querySelectorAll("a");
+      var len=matches.length;
+
+      for(var i=0;i<len;i++){
+            element=matches[i];
+            if(element.href.indexOf("/Webpages/") > -1){
+                  if(element.href.indexOf("?") > -1){
+                        element.href= element.href+"&year="+year;
+                  }
+                  else{
+                        element.href= element.href+"?year="+year;
+                  }
+            }
+      }
+       }
+       else{
+            setTimeout(function() { resetLinks() }, 50);
+       }
+ }
