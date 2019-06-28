@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+}
+
+.homeIcon {
+    background-image: url(''); // Update the background image url
+    padding: 14px 11px 10px 14px;
+    margin-top:-3px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+#DeltaTopNavigation,#DeltaPageStatusBar{
+      display:none;
+}
+#yearTitle{
+  font-size: 21pt;
+  font-weight: 600;
+  color:dimgray;
+  margin-left: 20px;
+}
+/* Top Navigation styling */
+
+  #topNavigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #1bc2a2;
+  }
+
+  #topNavigation ul li {
+    display: block;
+    position: relative;
+    float: left;
+    background: #1bc2a2;
+  }
+
+/* The CSS to hide the sub menus. */
+  #topNavigation li ul { display: none; }
+
+  #topNavigation ul li a {
+    display: block !important;
+    padding: 1em;
+    text-decoration: none;
+    white-space: nowrap;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+
+  #topNavigation ul li a:hover { background: #2c3e50; }
+
+/* Displays the dropdown menu on hover. */
+  #topNavigation li:hover > ul {
+    display: block !important;
+    position: absolute;
+  }
+
+  #topNavigation li:hover li { float: none; }
+
+  #topNavigation li:hover a { background: #1bc2a2; }
+
+  #topNavigation li:hover li a:hover { background: #2c3e50; }
+
+  .main-navigation li ul li { 
+    border-top: 0; 
+    box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+/* Displays second level dropdown menus to the right of the first level dropdown menu */
+  ul ul ul {
+    left: 100%;
+    top: 0;
+  }
+
+  /* Simple clearfix. */
+  ul:before,
+  ul:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+  }
+
+  ul:after { clear: both; }
+
+/*pre-loader */
+  div#preloader{
+  width:100%;
+  height: 100%;
+  left:0;
+  top:0;
+  opacity: 0.5;
+  position: fixed;
+  z-index: 999;
+  background-color: lightGrey;
+  display: none;
+  }
+  .eploader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background-color: #03a9f4;
+    border-radius: 50%;
+  }
+  .eploader:after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    border: 0px solid white;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    -webkit-animation: loading 1000ms ease-out forwards infinite;
+            animation: loading 1000ms ease-out forwards infinite;
+  }
+
+  @-webkit-keyframes loading {
+    0% {
+      border: 0px solid white;
+    }
+    20% {
+      border: 8px solid white;
+      width: 0%;
+      height: 0%;
+    }
+    100% {
+      border: 8px solid white;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @keyframes loading {
+    0% {
+      border: 0px solid white;
+    }
+    20% {
+      border: 8px solid white;
+      width: 0%;
+      height: 0%;
+    }
+    100% {
+      border: 8px solid white;
+      width: 100%;
+      height: 100%;
+    }
+  }
+/*....*/
